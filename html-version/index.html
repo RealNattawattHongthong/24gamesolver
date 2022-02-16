@@ -1,0 +1,240 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/w999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-w" />
+<title>24 solver</title>
+<script type="text/javascript">
+var permvar = new Array(24);
+
+permvar[0] = new Array('w','x','y','z');
+permvar[1] = new Array('w','x','z','y');
+permvar[2] = new Array('w','y','x','z');
+permvar[3] = new Array('w','y','z','x');
+
+permvar[4] = new Array('w','z','x','y');
+permvar[5] = new Array('w','z','y','x');
+permvar[6] = new Array('x','w','y','z');
+permvar[7] = new Array('x','w','z','y');
+
+permvar[8] = new Array('x','y','w','z');
+permvar[9] = new Array('x','y','z','w');
+permvar[10] = new Array('x','z','w','y');
+permvar[11] = new Array('x','z','y','w');
+
+permvar[12] = new Array('y','w','x','z');
+permvar[13] = new Array('y','w','z','x');
+permvar[14] = new Array('y','x','w','z');
+permvar[15] = new Array('y','x','z','w');
+
+permvar[16] = new Array('y','z','w','x');
+permvar[17] = new Array('y','z','x','w');
+permvar[18] = new Array('z','w','x','y');
+permvar[19] = new Array('z','w','y','x');
+
+permvar[20] = new Array('z','x','w','y');
+permvar[21] = new Array('z','x','y','w');
+permvar[22] = new Array('z','y','w','x');
+permvar[23] = new Array('z','y','x','w');
+
+var op = new Array('*','+','/','-');
+
+function findSolution () {
+  var w = parseInt($('first').value);
+  if (!w) {alert('You must enter a value for w'); return;}
+  var x = parseInt($('second').value);
+  if (!x) {alert('You must enter a value for x'); return;}
+  var y = parseInt($('third').value);
+  if (!y) {alert('You must enter a value for y'); return;}
+  var z = parseInt($('fourth').value);
+  if (!z) {alert('You must enter a value for z'); return;}
+  var sol = swap(w,x,y,z);
+  
+    if ($("debugCheck").checked) {
+      debug(sol[1]);
+    }
+  
+  sol = replace(sol[0], w, x, y, z);
+  
+  if (sol == 'no solution found.') {
+    $('solution').innerHTML = sol;
+  } else {
+    $('solution').innerHTML = sol + ' = 24';
+  }
+  
+  return false;
+}
+
+function replace(sol, w, x, y, z) {
+  sol = sol.replace('x',x);
+  sol = sol.replace('y',y);
+  sol = sol.replace('w',w);
+  sol = sol.replace('z',z);
+  sol = sol.replace('*', '&times;');
+  
+  return sol;
+}
+
+function debug(message) {
+  var text = $("debug").innerHTML; 
+  $("debug").innerHTML = message;
+}
+
+function swap (w,x,y,z) {
+    $("debug").innerHTML = '';
+    if ($("debugCheck").checked) {
+      var checked = true;
+    }
+
+  var op1,op2,op3;
+  dummy = "";
+  
+  for (i=0;i<24;i++) {
+    for (j=0;j<4;j++) {
+      op1 = op[j];
+      for (k=0;k<4;k++) {
+        op2 = op[k];
+        for (l=0;l<4;l++) { 
+          op3 = op[l];          
+          fu = permvar[i][0] + op1 + permvar[i][1] + op2 + permvar[i][2] + op3 + permvar[i][3];
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = '(' + permvar[i][0] + op1 + permvar[i][1] + ')' + op2 + permvar[i][2] + op3 + permvar[i][3];
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = permvar[i][0] + op1 + '(' + permvar[i][1] + op2 + permvar[i][2] + ')' + op3 + permvar[i][3];
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = permvar[i][0] + op1 + permvar[i][1] + op2 + '(' + permvar[i][2] + op3 + permvar[i][3] + ')';
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = '(' + permvar[i][0] + op1 + permvar[i][1]+ ')' + op2 + '(' + permvar[i][2] + op3 + permvar[i][3]+ ')';
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = '(' + permvar[i][0] + op1 + permvar[i][1] + op2 + permvar[i][2]+ ')' + op3 + permvar[i][3];
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = permvar[i][0] + op1 + '(' + permvar[i][1] + op2 + permvar[i][2] + op3 + permvar[i][3]+ ')';
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = '(' + '(' + permvar[i][0] + op1 + permvar[i][1]+ ')' + op2 + permvar[i][2]+ ')' + op3 + permvar[i][3];
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = permvar[i][0] + op1 + '(' + '(' + permvar[i][1] + op2 + permvar[i][2]+ ')' + op3 + permvar[i][3]+ ')';
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = '(' + permvar[i][0] + op1 + '(' +permvar[i][1] + op2 + permvar[i][2]+ ')'+ ')' + op3 + permvar[i][3];
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }
+          
+          fu = permvar[i][0] + op1 + '(' + permvar[i][1] + op2 + '(' +permvar[i][2] + op3 + permvar[i][3]+ ')'+ ')';
+          dummy += '<br/>' + replace(fu, w, x, y, z);
+          if ((f(w,x,y,z,fu)==24)) {
+            return [fu, dummy];
+          }                                                                           
+        }
+      }
+    }
+  }
+  
+  return ['no solution found.', dummy];
+}
+
+function $(e) {
+  return document.getElementById(e);
+}
+
+function f(w,x,y,z,fu) {
+  var myfunction = new Function("w","x","y","z", "return "+ fu + ";")
+  return myfunction(w,x,y,z,fu);
+}
+</script>
+
+<style type="text/css">
+  html {
+    background: lightgrey;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body::-webkit-scrollbar {
+    width: 0.5em;
+  }
+ 
+  body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  }
+ 
+  body::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+  }
+</style>
+</head>
+
+<body>
+<h2>24 Solver by <a href="https://nattawatt.com" target="_blank">Nattawatt Hongthong</a></h2>
+<p style="width:300px;">This script takes four numbers and attempts to find an arrangement of these four numbers and the arithmetic operations (&times; &plus; &minus; &divide;) to make the value 24. <a href="https://www.24game.com/" target="_blank">See this page</a> for the original creators of the 24 game.</p>
+<table style="width: 300px">
+<tr><td colspan="2">
+<form action="#">
+Enter your numbers.<br />
+<br /></td>
+
+<tr>
+  <td><label>First number:</label></td>
+  <td><input type="text" id="first" /></td>
+</tr>
+<tr>
+  <td><label>Second number:</label></td>
+  <td><input type="text" id="second" /></td>
+</tr>
+<tr>
+  <td><label>Third number:</label></td>
+  <td><input type="text" id="third" /></td>
+</tr>
+<tr>
+  <td><label>Fourth number:</label></td>
+  <td><input type="text" id="fourth" /></td>
+</tr>
+<tr>
+  <td><br />Debug<input type="checkbox" id="debugCheck" /></td>
+  <td><br /><input type="submit" value="Find Solution" onclick="findSolution()"/></td>
+</tr>
+</form>
+</table>
+<br />
+<span id="solutionLabel">Solution: </span>
+<span id="solution"></span>
+<div id="debug" style="position: absolute; left: 440px; top: 20px; width: 200px; height: 500px; overflow-y: scroll;"><div>
+</body>
+</html>
